@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"sort"
 	"strings"
 	"syscall"
 
@@ -68,5 +69,6 @@ func getHosts() ([]string, error) {
 	for i := 0; i < len(newHL); i++ {
 		newHL[i] = strings.ReplaceAll(newHL[i], "Host ", "")
 	}
+	sort.Strings(newHL)
 	return newHL, nil
 }
