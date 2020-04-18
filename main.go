@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 
 	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
@@ -30,12 +31,13 @@ func main() {
 		color.Red("[*] exiting...")
 	} else {
 		color.Green("[*] launching ssh on: %s\n", result)
-		cmd := exec.Command("ssh", result)
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
 
-		err := cmd.Run()
+		binary, lookErr := exec.LookPath("ssh")
+		if lookErr != nil {
+			panic(lookErr)
+		}
+		err := syscall.Exec(binary, []string{"ssh", result}, os.Environ())
+
 		if err != nil {
 			panic(err)
 		}
