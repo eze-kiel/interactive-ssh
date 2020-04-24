@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"sort"
@@ -50,8 +51,12 @@ func main() {
 
 func getHosts() ([]string, error) {
 	var hostsList []string
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	configFile, err := ioutil.ReadFile("/home/ezekiel/.ssh/config")
+	configFile, err := ioutil.ReadFile(homeDir + "/.ssh/config")
 	if err != nil {
 		return nil, err
 	}
