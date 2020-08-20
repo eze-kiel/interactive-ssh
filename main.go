@@ -63,17 +63,17 @@ func getHosts() ([]string, error) {
 
 	configFileStr := string(configFile)
 	hostsList = strings.Split(configFileStr, "\n")
-	var newHL []string
+	var newHostsList []string
 
 	for i := 0; i < len(hostsList); i++ {
 		if strings.Contains(hostsList[i], "Host ") {
-			newHL = append(newHL, hostsList[i])
+			newHostsList = append(newHostsList, hostsList[i])
 		}
 	}
 
-	for i := 0; i < len(newHL); i++ {
-		newHL[i] = strings.ReplaceAll(newHL[i], "Host ", "")
+	for i := 0; i < len(newHostsList); i++ {
+		newHostsList[i] = strings.ReplaceAll(newHostsList[i], "Host ", "")
 	}
-	sort.Strings(newHL)
-	return newHL, nil
+	sort.Strings(newHostsList)
+	return newHostsList, nil
 }
