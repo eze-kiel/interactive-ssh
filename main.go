@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -16,6 +15,9 @@ import (
 
 func main() {
 	hosts, err := getHosts()
+	if err != nil {
+		log.Fatal(err)
+	}
 	hosts = append(hosts, "quit")
 
 	prompt := promptui.Select{
@@ -24,33 +26,27 @@ func main() {
 	}
 
 	_, result, err := prompt.Run()
-
 	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
-		return
+		log.Fatal(err)
 	}
+
 	if result == "quit" {
 		color.Red("[*] exiting...")
-	} else {
-		color.Green("[*] launching ssh on: %s\n", result)
+		os.Exit(0)
+	}
 
-		binary, lookErr := exec.LookPath("ssh")
-		if lookErr != nil {
-			panic(lookErr)
-		}
-		err := syscall.Exec(binary, []string{"ssh", result}, os.Environ())
+	color.Green("[*] opening ssh connection on: %s\n", result)
+	binary, err := exec.LookPath("ssh")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-		if err != nil {
-			panic(err)
-		}
-		if err != nil {
-			panic(err)
-		}
+	if err := syscall.Exec(binary, []string{"ssh", result}, os.Environ()); err != nil {
+		log.Fatal(err)
 	}
 }
 
 func getHosts() ([]string, error) {
-	var hostsList []string
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
@@ -61,8 +57,7 @@ func getHosts() ([]string, error) {
 		return nil, err
 	}
 
-	configFileStr := string(configFile)
-	hostsList = strings.Split(configFileStr, "\n")
+	hostsList := strings.Split(string(configFile), "\n")
 	var newHostsList []string
 
 	for i := 0; i < len(hostsList); i++ {
