@@ -18,10 +18,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	hosts = append(hosts, "quit")
+	hosts = append(hosts, "quit iSSH")
 
 	prompt := promptui.Select{
-		Label: "Select host",
+		Label: "Select a SSH host",
 		Items: hosts,
 	}
 
@@ -30,7 +30,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if result == "quit" {
+	if result == "quit iSSH" {
 		color.Red("[*] exiting...")
 		os.Exit(0)
 	}
